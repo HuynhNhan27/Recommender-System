@@ -52,7 +52,8 @@ The evaluation results for both the TF-IDF and SVD models can be seen directly b
 
 **Interpretation of Results:** 
 
-*** The evaluation of the TF-IDF content-based recommender system yielded scores of 0 for MAP@K, NDCG@K, Precision@K, and Recall@K. This suggests that the model, in its current configuration, is not effectively recommending movies that align with the positive interactions (likes) observed in the test dataset. Several factors likely contribute to this outcome:
+I. The evaluation of the TF-IDF content-based recommender system yielded scores of 0 for MAP@K, NDCG@K, Precision@K, and Recall@K. This suggests that the model, in its current configuration, is not effectively recommending movies that align with the positive interactions (likes) observed in the test dataset. Several factors likely contribute to this outcome:
+
     1. Limitations of Content Representation (Insufficient Granularity):
     
         As you correctly pointed out, the content representation is solely based on the 'genres' of the movies. With only 19 distinct genres available in the Movielens dataset, the granularity of movie descriptions is quite coarse. Many movies share the same genre classifications, potentially leading to high similarity scores between movies that users might perceive as quite different. This lack of nuanced content features makes it challenging for the TF-IDF model to accurately capture the subtle differences in movie characteristics that drive individual user preferences. Consequently, the recommendations generated based on broad genre overlap may not resonate with specific user tastes.
@@ -65,7 +66,7 @@ The evaluation results for both the TF-IDF and SVD models can be seen directly b
     
         Despite the poor performance in a general recommendation setting, your insight about the TF-IDF model's tendency to recommend movies with similar genres highlights a potential niche application: a "Similar to What You've Seen" section. In this context, the model's strength in identifying movies with overlapping genre classifications could be valuable for users looking for more of what they have already experienced, regardless of the underlying reasons for their initial viewing. This feature could cater to users who enjoyed a movie for its genre and are seeking similar experiences.
         
-*** The evaluation of the 2 SVD model is the score of basic level recommendation quality:
+II. The evaluation of the 2 SVD model is the score of basic level recommendation quality:
 
     1. While the Baseline SVD exhibits slightly better performance in terms of rating prediction accuracy (lower RMSE and MAE, higher R-squared and explained variance), the Custom SVD shows a slight advantage in ranking quality, particularly as indicated by the higher NDCG@K and Recall@K. The MAP@K and Precision@K are quite similar between the two models.
     
