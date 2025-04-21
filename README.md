@@ -27,15 +27,15 @@ The TF-IDF score reflects how unique and important a genre is to a particular mo
 
 **Singular Value Decomposition (SVD)** is a matrix factorization technique. In the context of recommender systems, it decomposes the user-item rating matrix \(R\) into three matrices:
 
-\[
+$$
 R \approx U \Sigma V^T
-\]
+$$
 
 Where:
 
-* \(U\) is the user-latent factor matrix.
-* \(\Sigma\) is a diagonal matrix of singular values, representing the strength of each latent factor.
-* \(V^T\) is the item-latent factor matrix (transpose).
+* $$U$$ is the user-latent factor matrix.
+* $$\Sigma$$ is a diagonal matrix of singular values, representing the strength of each latent factor.
+* $$V^T$$ is the item-latent factor matrix (transpose).
 
 By learning these latent factors, SVD can predict the rating a user might give to an item they haven't interacted with. The Surprise library provides an efficient implementation of the SVD algorithm.
 
@@ -50,34 +50,17 @@ The evaluation results for both the TF-IDF and SVD models can be seen directly b
 1.  Open the `tfidf_movielens.ipynb` notebook and run all cells. The evaluation metrics for the TF-IDF model will be printed in the output of the evaluation cell.
 2.  Open the `svd_movielens.ipynb` notebook and run all cells. The evaluation metrics for both the custom and baseline SVD models will be printed in the output of their respective evaluation cells.
 
-**Interpretation of Results:** *(You can still keep a section for interpreting what the typical values of these metrics mean for recommendation systems)*
+**Interpretation of Results:** 
 
-For example:
-
-> Generally, lower RMSE and MAE values indicate better accuracy in rating predictions. For ranking metrics like MAP@K, NDCG@K, Precision@K, and Recall@K, higher values (closer to 1) indicate better performance in recommending relevant items in the top-K list. Compare the metrics obtained from the TF-IDF and SVD models to understand their relative strengths and weaknesses on this dataset.
-
-> The SVD model generally shows better performance in terms of RMSE and MAE, indicating more accurate rating predictions compared to the TF-IDF model. However, the ranking metrics (MAP@K, NDCG@K, Precision@K, Recall@K) might show different strengths for each model, reflecting their ability to recommend relevant items in the top-K list. The content-based TF-IDF model might excel in recommending novel items based on genre similarity, while the collaborative SVD model leverages user-item interaction patterns.
-
-## Getting Started
-
-To run the notebooks in this project, you will need to have Python and the necessary libraries installed. It is recommended to set up a virtual environment.
-
-1.  **Clone the repository:**
-    ```bash
-    git clone <your_repository_url>
-    cd <your_repository_directory>
-    ```
-
-2.  **Install the required libraries:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *(You might need to create a `requirements.txt` file listing the dependencies like `pandas`, `numpy`, `surprise`, `recommenders`)*
-
-3.  **Run the Jupyter Notebooks:**
-    ```bash
-    jupyter notebook
-    ```
-    This will open the Jupyter Notebook interface in your web browser, where you can navigate to and run `tfidf_movielens.ipynb` and `svd_movielens.ipynb`.
-
-## Project Structure
+*** The evaluation of the TF-IDF content-based recommender system yielded scores of 0 for MAP@K, NDCG@K, Precision@K, and Recall@K. This suggests that the model, in its current configuration, is not effectively recommending movies that align with the positive interactions (likes) observed in the test dataset. Several factors likely contribute to this outcome:
+    1. Limitations of Content Representation (Insufficient Granularity):
+        As you correctly pointed out, the content representation is solely based on the 'genres' of the movies. With only 19 distinct genres available in the Movielens dataset, the granularity of movie descriptions is quite coarse. Many movies share the same genre classifications, potentially leading to high similarity scores between movies that users might perceive as quite different. This lack of nuanced content features makes it challenging for the TF-IDF model to accurately capture the subtle differences in movie characteristics that drive individual user preferences. Consequently, the recommendations generated based on broad genre overlap may not resonate with specific user tastes.
+    2.  Disconnect Between "Seen" and "Favorite" (Weak Signal in User History):
+        Your observation that user interactions might be heavily influenced by factors other than genuine preference (e.g., popularity, trends) is crucial. If a significant portion of the movies users have seen and rated positively were driven by external factors rather than intrinsic enjoyment of the movie's content, then using these "likes" to build a genre-based user profile becomes less reliable. The model is learning preferences based on what users watched and rated favorably for various reasons, not necessarily what they truly favor in terms of underlying content. This introduces noise into the user profiles and hinders the model's ability to recommend genuinely relevant content.
+    3. Potential Use Case: "Similar to What You've Seen" Section:
+        Despite the poor performance in a general recommendation setting, your insight about the TF-IDF model's tendency to recommend movies with similar genres highlights a potential niche application: a "Similar to What You've Seen" section. In this context, the model's strength in identifying movies with overlapping genre classifications could be valuable for users looking for more of what they have already experienced, regardless of the underlying reasons for their initial viewing. This feature could cater to users who enjoyed a movie for its genre and are seeking similar experiences.
+        
+*** The evaluation of the 2 SVD model is the score of basic level recommendation quality:
+    1. While the Baseline SVD exhibits slightly better performance in terms of rating prediction accuracy (lower RMSE and MAE, higher R-squared and explained variance), the Custom SVD shows a slight advantage in ranking quality, particularly as indicated by the higher NDCG@K and Recall@K. The MAP@K and Precision@K are quite similar between the two models.
+    2. Modifications made in the Custom SVD model (SVD + ML) might have slightly shifted the model's focus towards better ranking of relevant items, potentially at the cost of a minor decrease in pure rating prediction accuracy.
+    3. The choice of which model is "better" would depend on the specific goals of the recommender system. If accurate rating prediction is paramount, the Baseline SVD might be preferred. However, if the primary goal is to provide well-ranked and relevant recommendations, the Custom SVD appears to be slightly more effective. The differences, however, are relatively small, indicating that both the standard SVD and the customized version perform comparably on this dataset.
